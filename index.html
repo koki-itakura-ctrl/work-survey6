@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>カンタン！お仕事アンケート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF6FF;
+    --ink: #2B2140;
+    --ink-soft: #8177A0;
+    --line: #E9DFFB;
+    --accent: #7C5CFF;    --accent-soft: #EFE9FF;
+    --pop: #FFC93C;       --pop-soft: #FFF3D2;
+    --good: #1FB574;      --good-soft: #DEF7EA;
+    --normal: #FF9F3C;    --normal-soft: #FFEEDC;
+    --follow: #FF5C7A;    --follow-soft: #FFE1E8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+  }
+  h1, h2, .serif { font-family: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', sans-serif; font-weight: 800; letter-spacing: .01em; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+  .center-wrap { max-width: 460px; margin: 0 auto; padding: 60px 20px; }
+  header.topbar {
+    border-bottom: 3px solid var(--accent);
+    background: #fff;
+  }
+  .topbar-inner {
+    max-width: 960px; margin: 0 auto; padding: 0 20px;
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .brand { font-family: 'M PLUS Rounded 1c', sans-serif; font-weight: 800; font-size: 17px; color: var(--accent); }
+  nav.tabs { display: flex; gap: 20px; font-size: 14px; align-items: center; }
+  nav.tabs a { color: var(--ink-soft); text-decoration: none; cursor: pointer; font-weight: 500; }
+  nav.tabs a.active, nav.tabs a:hover { color: var(--accent); }
+  .muted { color: var(--ink-soft); }
+  .small { font-size: 13px; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 24px;
+    box-shadow: 0 8px 24px rgba(124, 92, 255, .08);
+  }
+  .btn {
+    display: inline-block; background: var(--accent); color: #fff; border: none;
+    padding: 12px 22px; border-radius: 999px; font-size: 15px; font-weight: 700; cursor: pointer;
+    font-family: inherit; box-shadow: 0 4px 14px rgba(124, 92, 255, .35);
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .btn:hover { background: #6a48f2; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124, 92, 255, .45); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn.ghost {
+    background: transparent; color: var(--accent); border: 2px solid var(--accent); box-shadow: none;
+  }
+  .btn.ghost:hover { background: var(--accent-soft); box-shadow: none; }
+  .btn.link { background: none; color: var(--accent); padding: 4px 0; text-decoration: underline; font-size: 13px; font-weight: 500; box-shadow: none; border-radius: 0; }
+  .btn.link:hover { transform: none; box-shadow: none; background: none; color: #6a48f2; }
+  .btn.small-btn { padding: 6px 14px; font-size: 13px; }
+  .pill-toggle { display: inline-flex; background: var(--accent-soft); border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 22px; }
+  .pill-toggle button {
+    border: none; background: transparent; padding: 8px 18px; border-radius: 999px; font-size: 13px;
+    font-weight: 700; color: var(--ink-soft); cursor: pointer; font-family: inherit;
+  }
+  .pill-toggle button.active { background: var(--accent); color: #fff; }
+  input[type=text], input[type=password], input[type=email], input[type=url], select, textarea {
+    width: 100%; border: 2px solid var(--line); border-radius: 12px; padding: 9px 14px;
+    font-family: inherit; font-size: 15px; color: var(--ink); background: #fff;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  label.field-label { display: block; font-size: 13px; color: var(--ink-soft); margin-bottom: 5px; font-weight: 500; }
+  .field { margin-bottom: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
+  @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+  .stack { display: flex; flex-direction: column; gap: 24px; }
+  .likert { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px;}
+  .likert label {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
+  }
+  .likert input { position: absolute; opacity: 0; pointer-events: none; }
+  .likert .dot {
+    width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line);
+    display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--ink-soft);
+    transition: transform .1s ease, background .1s ease, border-color .1s ease;
+  }
+  .likert label:hover .dot { border-color: var(--accent); }
+  .likert input:checked + .dot { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.12); }
+  .likert .cap { font-size: 10px; color: var(--ink-soft); text-align: center; line-height: 1.2; }
+  fieldset { border: none; padding: 0; margin: 0 0 26px; border-top: 2px dashed var(--line); padding-top: 22px; }
+  fieldset:first-of-type { border-top: none; padding-top: 0; }
+  legend { padding: 0; font-weight: 700; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-weight: 600; color: var(--ink-soft); font-size: 12px; padding-bottom: 8px; }
+  td { padding: 10px 8px 10px 0; border-top: 2px solid var(--line); vertical-align: middle; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .badge .dot2 { width: 7px; height: 7px; border-radius: 50%; }
+  .lvl-良好 { background: var(--good-soft); color: var(--good); } .lvl-良好 .dot2 { background: var(--good); }
+  .lvl-ふつう { background: var(--normal-soft); color: var(--normal); } .lvl-ふつう .dot2 { background: var(--normal); }
+  .lvl-要フォロー { background: var(--follow-soft); color: var(--follow); } .lvl-要フォロー .dot2 { background: var(--follow); }
+  details > summary { cursor: pointer; list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .notice {
+    background: var(--accent-soft); border-radius: 14px; padding: 14px 16px; font-size: 13px; color: var(--ink);
+  }
+  .warn-box {
+    background: var(--follow-soft); color: var(--follow); border-radius: 14px; padding: 12px 14px; font-size: 13px;
+  }
+  .empty { text-align: center; padding: 32px 0; color: var(--ink-soft); font-size: 14px; }
+  .legend-list { list-style: none; padding: 0; margin: 14px 0 0; font-size: 13px; }
+  .legend-list li { display: flex; justify-content: space-between; padding: 4px 0; }
+  .legend-list .dot3 { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+  .staff-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+  @media (max-width: 700px) { .staff-form { grid-template-columns: 1fr; } }
+  .footer-note { margin-top: 40px; font-size: 12px; color: var(--ink-soft); }
+  a.text-link { color: var(--accent); }
+  .storage-warning {
+    background: var(--pop-soft); color: #8A6600; font-size: 13px;
+    padding: 10px 20px; text-align: center; font-weight: 500;
+  }
+  .storage-warning .inner { max-width: 960px; margin: 0 auto; }
+  .busy-toast {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 50;
+    background: var(--ink); color: #fff; padding: 8px 18px; border-radius: 999px; font-size: 13px; display: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="busyToast" class="busy-toast">通信中…</div>
+<header class="topbar" id="topbar" style="display:none;">
+  <div class="topbar-inner">
+    <span class="brand">カンタン！お仕事アンケート</span>
+    <nav class="tabs" id="navTabs"></nav>
+  </div>
+</header>
+
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   カンタン！お仕事アンケート（単一HTMLファイル版）
+   - データはすべてGoogleスプレッドシート（Apps Script経由）に保存される
+   - 従業員：自分専用リンクからアンケートに回答
+   - 管理者：ユーザー名＋パスワードで登録・ログインし、
+     自分が登録したスタッフ・回答だけを管理する
+   - 任意設定：Google Apps Script 経由でスプレッドシートにも自動反映
+   ============================================================ */
+
+/* ---------- 設定 ---------- */
+const GAS_URL = 'https://script.google.com/a/macros/staff-b.com/s/AKfycbzg-6Sjp38ytszzEx_1Jo-ioOB-v7J7JrOqoY5OSw7t9a0do9mM2o_a48tM8_63wHzD-Q/exec';
+
+/* ---------- 管理者のログイン状態（このタブを閉じると消える） ---------- */
+const SESSION_KEY = 'oshigoto-survey:session';
+let memorySession = '';
+function getSession() {
+  try { return window.sessionStorage.getItem(SESSION_KEY) || memorySession; } catch (e) { return memorySession; }
+}
+function setSession(token) {
+  memorySession = token || '';
+  try {
+    if (token) window.sessionStorage.setItem(SESSION_KEY, token);
+    else window.sessionStorage.removeItem(SESSION_KEY);
+  } catch (e) { /* 使えない環境ではメモリのみ */ }
+}
+
+/* ---------- サーバー（Apps Script）との通信 ---------- */
+let pendingRequests = 0;
+function updateBusy() {
+  const el = document.getElementById('busyToast');
+  if (el) el.style.display = pendingRequests > 0 ? 'block' : 'none';
+}
+
+async function api(action, payload = {}) {
+  if (!GAS_URL) return { ok: false, error: 'GAS_URL が設定されていません。' };
+  pendingRequests++; updateBusy();
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action: action, session: getSession() }, payload))
+    });
+    return await res.json();
+  } catch (e) {
+    console.error('通信エラー', e);
+    return { ok: false, networkError: true, error: 'サーバーに接続できませんでした。通信状況を確認して、もう一度お試しください。' };
+  } finally {
+    pendingRequests--; updateBusy();
+  }
+}
+
+/* ---------- コンディション判定ロジック ---------- */
+const LEVELS = ['良好', 'ふつう', '要フォロー'];
+
+const RESIGNATION_KEYWORDS = [
+  '辞めたい', '辞めます', '辞めようと思', '辞めようかな', '辞めることを考え',
+  '退職したい', '退職を考え', '退職を検討', '退職しようと思',
+  '転職したい', '転職を考え', '転職を検討', '転職しようと思',
+  'もう辞め', '仕事を辞め', '辞めさせてください', '辞めさせて頂き'
+];
+
+function hasResignationConcern(text) {
+  const t = (text || '');
+  return RESIGNATION_KEYWORDS.some(kw => t.includes(kw));
+}
+
+function bumpLevel(level, steps) {
+  const idx = LEVELS.indexOf(level);
+  return LEVELS[Math.min(LEVELS.length - 1, idx + steps)];
+}
+
+function baseLevelFromScores(average, min) {
+  if (average >= 4.0 && min >= 3) return '良好';
+  if (average >= 3.0 && min >= 2) return 'ふつう';
+  return '要フォロー';
+}
+
+function determineCondition(q1, q2, q3, ikigai, komari) {
+  const average = (q1 + q2 + q3) / 3;
+  const min = Math.min(q1, q2, q3);
+
+  let level = baseLevelFromScores(average, min);
+
+  const lowCount = [q1, q2, q3].filter((v) => v <= 2).length;
+  if (lowCount >= 2 && level !== '要フォロー') level = bumpLevel(level, 1);
+
+  const concernFlag = hasResignationConcern(ikigai) || hasResignationConcern(komari);
+  if (concernFlag) level = '要フォロー';
+
+  const followUps = [];
+  if (level !== '良好') {
+    if (q1 <= 3) followUps.push({
+      factor: '業務内容',
+      talkingPoints: [
+        '最近の業務量や役割分担について、率直にどう感じているか聞いてみましょう。',
+        '「今の仕事で、やりがいを感じている部分と負担に感じている部分を教えてください」',
+        '必要であれば業務内容の見直しや配置転換の相談窓口を案内しましょう。'
+      ]
+    });
+    if (q2 <= 3) followUps.push({
+      factor: '人間関係',
+      talkingPoints: [
+        '職場の雰囲気やお店の方とのコミュニケーションについて聞いてみましょう。',
+        '「チームの中で相談しにくいと感じることはありますか」',
+        '特定の相手との関係が背景にある場合は、個別のヒアリングを検討しましょう。'
+      ]
+    });
+    if (q3 <= 3) followUps.push({
+      factor: '体調',
+      talkingPoints: [
+        '睡眠や疲労感など、体調面で気になっていることがないか聞いてみましょう。',
+        '「最近、体調で気になっていることはありますか。無理はしていませんか」',
+        '必要に応じて産業医面談や休養の取得を案内しましょう。'
+      ]
+    });
+  }
+
+  if (concernFlag) followUps.push({
+    factor: '退職の懸念',
+    talkingPoints: [
+      '自由記述の内容から、退職を考えている可能性のある表現が見られます。まずは本人の話をじっくり聞く場を早めに設けましょう。',
+      '「最近、今の仕事について率直にどう感じているか聞かせてもらえますか」',
+      '一人で抱え込まず、早めにHR・上長間で情報共有し、対応を検討しましょう。'
+    ]
+  });
+
+  if (level === '要フォロー' && followUps.length === 0) followUps.push({
+    factor: '業務内容',
+    talkingPoints: [
+      '全体的に評価が低いため、まずは体調・業務・人間関係のどこに負担があるか広く聞いてみましょう。',
+      '「最近、しんどいと感じる場面が多いですか。よければ詳しく教えてください」',
+      '早めに1on1の機会を設け、必要に応じてHR・産業医と連携しましょう。'
+    ]
+  });
+
+  return {
+    level,
+    averageScore: Math.round(average * 100) / 100,
+    minScore: min,
+    concernFlag,
+    followUps
+  };
+}
+
+function currentPeriod(date = new Date()) {
+  const q = Math.floor(date.getMonth() / 3) + 1;
+  return `${date.getFullYear()}-Q${q}`;
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function personalLink(token) {
+  const base = window.location.href.split('#')[0];
+  return `${base}#s=${encodeURIComponent(token)}`;
+}
+
+function getTokenFromHash() {
+  const h = window.location.hash || '';
+  const m = h.match(/[#&]s=([^&]+)/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function isValidUsername(name) {
+  if (!name || name.length > 80) return false;
+  return !/[\/\\?\*\[\]:]/.test(name);
+}
+
+/* ---------- アプリ状態 ---------- */
+const state = {
+  view: 'loading',
+  staffList: [],
+  responses: [],
+  currentAdmin: null,
+  authMode: 'login',
+  survey: null,
+  surveyToken: '',
+  loadError: '',
+  editingStaffId: null,
+  viewingStaffId: null,
+  errorMsg: '',
+  successMsg: ''
+};
+
+const app = document.getElementById('app');
+const topbar = document.getElementById('topbar');
+const navTabs = document.getElementById('navTabs');
+
+function myStaff() { return state.staffList; }
+function myResponses() { return state.responses; }
+
+async function loadAdminData() {
+  const res = await api('adminData');
+  if (res.ok) {
+    state.currentAdmin = res.admin;
+    state.staffList = res.staff;
+    state.responses = res.responses;
+  }
+  return res;
+}
+
+async function refreshAdminData() {
+  const res = await api('adminData');
+  if (res.authError) { forceLogout(res.error); return; }
+  if (res.ok) {
+    state.currentAdmin = res.admin;
+    state.staffList = res.staff;
+    state.responses = res.responses;
+  }
+  render();
+}
+
+function forceLogout(message) {
+  setSession('');
+  state.currentAdmin = null;
+  state.staffList = [];
+  state.responses = [];
+  state.editingStaffId = null;
+  state.viewingStaffId = null;
+  state.authMode = 'login';
+  state.view = 'adminEntry';
+  state.errorMsg = message || '';
+  state.successMsg = '';
+  render();
+}
+
+async function adminCall(action, payload) {
+  const res = await api(action, payload);
+  if (res.authError) { forceLogout(res.error); return null; }
+  return res;
+}
+
+function showMsg(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text || '';
+}
+
+/* ---------- 初期化 ---------- */
+async function init() {
+  if (!GAS_URL) { state.view = 'noConfig'; render(); return; }
+  render();
+
+  const token = getTokenFromHash();
+  if (token) {
+    const res = await api('getSurveyStaff', { token: token });
+    if (res.ok) {
+      state.survey = res.staff;
+      state.surveyToken = token;
+      state.view = 'survey';
+    } else if (res.networkError) {
+      state.loadError = res.error;
+      state.view = 'loadError';
+    } else {
+      state.view = 'invalidLink';
+    }
+    render();
+    return;
+  }
+
+  if (getSession()) {
+    const res = await loadAdminData();
+    if (res.ok) { state.view = 'dashboard'; render(); return; }
+    if (res.networkError) { state.loadError = res.error; state.view = 'loadError'; render(); return; }
+    setSession('');
+  }
+  state.view = 'home';
+  render();
+}
+
+/* ---------- ナビゲーション ---------- */
+function setView(view) {
+  state.view = view;
+  state.errorMsg = '';
+  state.successMsg = '';
+  render();
+}
+
+function renderTopbar() {
+  const EMPLOYEE_FACING = ['loading', 'noConfig', 'loadError', 'home', 'invalidLink', 'survey', 'surveyDone'];
+  if (EMPLOYEE_FACING.includes(state.view)) {
+    topbar.style.display = 'none';
+    return;
+  }
+  topbar.style.display = 'block';
+  const isAdminArea = state.currentAdmin && ['dashboard', 'staff', 'staffDetail'].includes(state.view);
+  navTabs.innerHTML = `
+    <a data-nav="home">トップ</a>
+    ${isAdminArea ? `
+      <a data-nav="dashboard" class="${state.view === 'dashboard' ? 'active' : ''}">ダッシュボード</a>
+      <a data-nav="staff" class="${(state.view === 'staff' || state.view === 'staffDetail') ? 'active' : ''}">スタッフ管理</a>
+      <a data-nav="refresh">更新</a>
+      <span class="muted small">${escapeHtml(state.currentAdmin.username)} さん</span>
+      <a data-nav="logout">ログアウト</a>
+    ` : ''}
+  `;
+}
+
+/* ---------- 画面ビュー定義 ---------- */
+function viewLoading() {
+  return `<div class="center-wrap" style="text-align:center;"><p class="muted">読み込み中…</p></div>`;
+}
+
+function viewNoConfig() {
+  return `
+    <div class="center-wrap">
+      <h1 class="serif" style="font-size:20px; margin:0 0 10px;">まだ設定が完了していません</h1>
+      <p class="muted small">
+        （ツールを公開する担当の方へ）index.html の中にある <code>const GAS_URL = '';</code> の
+        引用符の間に、Apps Script のウェブアプリURL（…/exec で終わるもの）を貼り付けて、
+        もう一度アップロードしてください。
+      </p>
+    </div>
+  `;
+}
+
+function viewLoadError() {
+  return `
+    <div class="center-wrap">
+      <h1 class="serif" style="font-size:20px; margin:0 0 10px;">読み込めませんでした</h1>
+      <p class="muted" style="margin-bottom:20px;">${escapeHtml(state.loadError || 'サーバーに接続できませんでした。')}</p>
+      <button class="btn" id="reloadBtn">もう一度読み込む</button>
+    </div>
+  `;
+}
+
+function viewHome() {
+  return `
+    <div class="center-wrap">
+      <p class="muted small" style="margin-bottom:6px;">お店向け</p>
+      <h1 class="serif" style="font-size:26px; margin:0 0 14px;">カンタン！お仕事アンケート</h1>
+      <p class="muted" style="margin-bottom:28px;">
+        スタッフの方は、管理者から届いた「あなた専用のリンク」からアクセスしてください。
+        このページを直接開いても、本人確認ができないためアンケートには回答できません。<br><br>
+        管理者の方は「管理者ログイン」からダッシュボードにアクセスできます。
+      </p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button class="btn ghost" data-nav="adminEntry">管理者ログイン</button>
+      </div>
+      <p class="footer-note">
+        管理者ごとにスタッフ一覧・回答データは分かれて管理されます。
+      </p>
+    </div>
+  `;
+}
+
+function viewInvalidLink() {
+  return `
+    <div class="center-wrap">
+      <h1 class="serif" style="font-size:20px; margin:0 0 10px;">リンクが正しくありません</h1>
+      <p class="muted">
+        このリンクは古くなっている（再発行済み）か、対象のスタッフが削除された可能性があります。
+        お手数ですが管理者にご確認ください。
+      </p>
+    </div>
+  `;
+}
+
+function viewSurvey() {
+  const staff = state.survey;
+  if (!staff) return viewInvalidLink();
+
+  return `
+    <div class="wrap" style="max-width:640px;">
+      <h1 class="serif" style="font-size:22px; margin:6px 0 24px;">カンタン！お仕事アンケート</h1>
+
+      <form id="surveyForm">
+        <div class="notice" style="margin-bottom:22px;">
+          <strong>${escapeHtml(staff.name)}</strong> さん（${escapeHtml(staff.staffNumber)}）
+        </div>
+
+        <fieldset>
+          <legend>現在の業務内容に満足していますか？</legend>
+          ${likertHtml('q1')}
+        </fieldset>
+        <fieldset>
+          <legend>職場での人間関係は良好ですか？</legend>
+          ${likertHtml('q2')}
+        </fieldset>
+        <fieldset>
+          <legend>体調は良好ですか？</legend>
+          ${likertHtml('q3')}
+        </fieldset>
+        <fieldset>
+          <legend>やりがいに感じること</legend>
+          <textarea id="ikigai" rows="3" required placeholder="例：お客様から直接感謝の言葉をもらえること"></textarea>
+        </fieldset>
+        <fieldset>
+          <legend>お店の方とのやりとりや業務面で困っていること</legend>
+          <textarea id="komari" rows="3" required placeholder="例：忙しい時間帯の人手が足りず負担が大きいです"></textarea>
+        </fieldset>
+
+        <p id="surveyError" class="small" style="color:var(--follow); margin-bottom:14px;"></p>
+
+        <button type="submit" class="btn" style="width:100%;">回答を送信する</button>
+      </form>
+    </div>
+  `;
+}
+
+function likertHtml(name) {
+  const labels = ['全くそう思わない', 'あまりそう思わない', 'どちらともいえない', 'そう思う', 'とてもそう思う'];
+  return `
+    <div class="likert">
+      ${labels.map((label, i) => {
+        const v = i + 1;
+        return `
+          <label>
+            <input type="radio" name="${name}" value="${v}" required />
+            <span class="dot">${v}</span>
+            <span class="cap">${label}</span>
+          </label>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function viewSurveyDone() {
+  return `
+    <div class="center-wrap">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--good-soft);color:var(--good);
+                  display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:18px;">✓</div>
+      <h1 class="serif" style="font-size:22px; margin:0 0 10px;">回答ありがとうございました</h1>
+      <p class="muted">アンケートの内容は上長との1on1準備に活用されます。このページは閉じていただいて構いません。</p>
+    </div>
+  `;
+}
+
+function viewAdminEntry() {
+  return `
+    <div class="center-wrap">
+      <h1 class="serif" style="font-size:20px; margin:0 0 18px;">管理者ページ</h1>
+      <div class="pill-toggle">
+        <button type="button" data-auth-mode="login" class="${state.authMode === 'login' ? 'active' : ''}">ログイン</button>
+        <button type="button" data-auth-mode="register" class="${state.authMode === 'register' ? 'active' : ''}">新規登録</button>
+      </div>
+      ${state.authMode === 'register' ? viewAdminRegisterForm() : viewAdminLoginForm()}
+    </div>
+  `;
+}
+
+function viewAdminLoginForm() {
+  return `
+    <form id="loginForm" class="card">
+      <div class="field">
+        <label class="field-label" for="loginUsername">ユーザー名</label>
+        <input type="text" id="loginUsername" required />
+      </div>
+      <div class="field">
+        <label class="field-label" for="loginPw">パスワード</label>
+        <input type="password" id="loginPw" required />
+      </div>
+      <p id="authError" class="small" style="color:var(--follow); margin-bottom:12px;">${escapeHtml(state.errorMsg)}</p>
+      <button type="submit" class="btn" style="width:100%;">ログイン</button>
+    </form>
+  `;
+}
+
+function viewAdminRegisterForm() {
+  return `
+    <form id="registerForm" class="card">
+      <p class="muted small" style="margin:0 0 14px;">
+        ここで登録するユーザー名は、スプレッドシート上のあなたの回答シートの名前にもなります。
+        後から変更はできないのでご注意ください。
+      </p>
+      <div class="field">
+        <label class="field-label" for="regUsername">ユーザー名</label>
+        <input type="text" id="regUsername" required placeholder="例：山田" />
+      </div>
+      <div class="field">
+        <label class="field-label" for="regPw1">パスワード</label>
+        <input type="password" id="regPw1" required minlength="4" />
+      </div>
+      <div class="field">
+        <label class="field-label" for="regPw2">確認のためもう一度</label>
+        <input type="password" id="regPw2" required minlength="4" />
+      </div>
+      <p id="authError" class="small" style="color:var(--follow); margin-bottom:12px;">${escapeHtml(state.errorMsg)}</p>
+      <button type="submit" class="btn" style="width:100%;">登録してはじめる</button>
+    </form>
+  `;
+}
+
+function getLatestByStaff() {
+  const myIds = new Set(myStaff().map(s => s.id));
+  const sorted = myResponses()
+    .filter(r => myIds.has(r.staffId))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const map = new Map();
+  for (const r of sorted) {
+    if (!map.has(r.staffId)) map.set(r.staffId, r);
+  }
+  return map;
+}
+
+function staffById(id) {
+  const s = state.staffList.find(x => x.id === id);
+  if (s) return s;
+  const r = state.responses.find(x => x.staffId === id);
+  return { name: (r ? r.staffName : '') + '（削除済み）', staffNumber: '-', brand: r ? r.brand : '' };
+}
+
+function latestResponseFor(staffId) {
+  const responses = state.responses.filter(r => r.staffId === staffId);
+  if (responses.length === 0) return null;
+  return responses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+}
+
+function viewDashboard() {
+  const latestMap = getLatestByStaff();
+  const latest = Array.from(latestMap.values());
+
+  const colorOf = { '良好': '#1FB574', 'ふつう': '#FF9F3C', '要フォロー': '#FF5C7A' };
+  const counts = LEVELS.map(level => ({
+    level,
+    count: latest.filter(r => r.level === level).length,
+    color: colorOf[level]
+  }));
+
+  const followUpList = latest
+    .filter(r => r.level === '要フォロー')
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const recent = [...myResponses()]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 3);
+
+  return `
+    <div class="wrap">
+      <div class="row-between" style="margin-bottom:24px; align-items:flex-end;">
+        <div>
+          <p class="muted small" style="margin:0 0 4px;">${currentPeriod()} 実施分</p>
+          <h1 class="serif" style="font-size:22px; margin:0;">チームコンディション ダッシュボード</h1>
+        </div>
+        <p class="muted small">対象メンバー ${myStaff().length}名</p>
+      </div>
+
+      <div class="grid-2">
+        <section class="card">
+          <h2 style="font-size:15px; font-weight:500; margin:0 0 14px;">コンディション分布</h2>
+          ${donutSvg(counts)}
+        </section>
+
+        <div class="stack">
+          <section class="card">
+            <div class="row-between" style="margin-bottom:12px;">
+              <h2 style="font-size:15px; font-weight:500; margin:0;">要フォロー対象者</h2>
+              <span class="muted small">${followUpList.length}名</span>
+            </div>
+            ${followUpList.length === 0
+              ? `<div class="empty">現在、要フォロー対象のメンバーはいません。</div>`
+              : followUpList.map(r => followUpRow(r)).join('')}
+          </section>
+
+          <section class="card">
+            <h2 style="font-size:15px; font-weight:500; margin:0 0 12px;">最近の回答</h2>
+            ${recent.length === 0
+              ? `<div class="empty">まだ回答がありません。</div>`
+              : `<table><tbody>${recent.map(r => {
+                  const s = staffById(r.staffId);
+                  return `
+                    <tr>
+                      <td>${escapeHtml(s.name)} <span class="muted small">${escapeHtml(r.period)}</span></td>
+                      <td style="text-align:right;"><span class="muted small">${formatDate(r.createdAt)}</span></td>
+                      <td style="text-align:right;">${badge(r.level)}</td>
+                    </tr>
+                  `;
+                }).join('')}</tbody></table>`}
+          </section>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function followUpRow(r) {
+  const s = staffById(r.staffId);
+  return `
+    <details style="border-top:1px solid var(--line); padding:12px 0;">
+      <summary class="row-between">
+        <span>
+          <strong>${escapeHtml(s.name)}</strong>
+          <span class="muted small">${escapeHtml(s.staffNumber)}${s.brand ? ' ・ ' + escapeHtml(s.brand) : ''}</span>
+        </span>
+        <span style="display:flex; align-items:center; gap:10px;">
+          <span class="muted small">${formatDate(r.createdAt)}</span>
+          ${badge(r.level)}
+        </span>
+      </summary>
+      <div style="margin-top:10px; padding-left:2px;">
+        <p class="small" style="color:var(--ink-soft); margin:0 0 4px;">やりがいに感じること</p>
+        <p class="small" style="background:var(--paper); border-radius:8px; padding:10px; margin:0 0 10px;">「${escapeHtml(r.ikigai)}」</p>
+        <p class="small" style="color:var(--ink-soft); margin:0 0 4px;">困っていること</p>
+        <p class="small" style="background:var(--follow-soft); opacity:.85; border-radius:8px; padding:10px; margin:0 0 12px;">「${escapeHtml(r.komari)}」</p>
+        ${r.followUps.map(f => `
+          <p class="small" style="color:var(--ink-soft); margin:10px 0 4px;">${escapeHtml(f.factor)}</p>
+          <ul class="small" style="margin:0 0 6px; padding-left:18px;">
+            ${f.talkingPoints.map(t => `<li>${escapeHtml(t)}</li>`).join('')}
+          </ul>
+        `).join('')}
+      </div>
+    </details>
+  `;
+}
+
+function badge(level) {
+  return `<span class="badge lvl-${level}"><span class="dot2"></span>${level}</span>`;
+}
+
+function donutSvg(counts) {
+  const total = counts.reduce((s, c) => s + c.count, 0);
+  const radius = 70, cx = 90, cy = 90, circumference = 2 * Math.PI * radius;
+  let offset = 0;
+  let circles = '';
+  if (total > 0) {
+    counts.forEach(c => {
+      if (c.count === 0) return;
+      const fraction = c.count / total;
+      const dash = fraction * circumference;
+      circles += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${c.color}" stroke-width="24"
+        stroke-dasharray="${dash} ${circumference - dash}" stroke-dashoffset="${-offset}"
+        transform="rotate(-90 ${cx} ${cy})" />`;
+      offset += dash;
+    });
+  } else {
+    circles = `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="var(--line)" stroke-width="24" />`;
+  }
+
+  return `
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div style="position:relative; width:180px; height:180px;">
+        <svg viewBox="0 0 180 180" width="180" height="180">${circles}</svg>
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="font-size:22px; font-weight:500;">${total}</span>
+          <span class="muted small">名が回答済み</span>
+        </div>
+      </div>
+      <ul class="legend-list" style="width:100%;">
+        ${counts.map(c => `
+          <li>
+            <span><span class="dot3" style="background:${c.color};"></span>${c.level}</span>
+            <span class="muted">${c.count}名</span>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+  `;
+}
+
+function viewStaff() {
+  const list = myStaff();
+  return `
+    <div class="wrap">
+      <h1 class="serif" style="font-size:22px; margin:0 0 6px;">スタッフ管理</h1>
+      <p class="muted small" style="margin-bottom:24px;">
+        スタッフ番号と氏名を登録すると、その方専用の回答リンクが自動的に発行されます。
+        リンクを開いた本人には自分の名前だけが表示され、他のスタッフの名前は一切表示されません。
+        リンクは個別にご本人へ共有してください。
+      </p>
+
+      <form id="staffForm" class="card" style="margin-bottom:24px;">
+        <div class="staff-form">
+          <div class="field" style="margin:0;">
+            <label class="field-label" for="staffNumber">スタッフ番号</label>
+            <input type="text" id="staffNumber" placeholder="EMP-0031" required />
+          </div>
+          <div class="field" style="margin:0;">
+            <label class="field-label" for="staffName">氏名</label>
+            <input type="text" id="staffName" placeholder="山田 太郎" required />
+          </div>
+          <div class="field" style="margin:0;">
+            <label class="field-label" for="staffBrand">ブランド（任意）</label>
+            <input type="text" id="staffBrand" placeholder="○○店" />
+          </div>
+          <button type="submit" class="btn">登録する</button>
+        </div>
+        <p id="staffFormError" class="small" style="color:var(--follow); margin:12px 0 0;"></p>
+        ${state.successMsg ? `<p class="small" style="color:var(--good); margin:12px 0 0;">${escapeHtml(state.successMsg)}</p>` : ''}
+      </form>
+
+      <section class="card">
+        <h2 style="font-size:15px; font-weight:500; margin:0 0 14px;">登録済みスタッフ（${list.length}名）</h2>
+        ${list.length === 0 ? `<div class="empty">まだスタッフが登録されていません。</div>` : `
+          <div style="overflow-x:auto;">
+          <table style="min-width:820px;">
+            <thead>
+              <tr><th>スタッフ番号</th><th>氏名</th><th>ブランド</th><th>最新の状態</th><th>個人リンク</th><th></th></tr>
+            </thead>
+            <tbody>
+              ${list.map(s => s.id === state.editingStaffId ? staffEditRow(s) : staffRow(s)).join('')}
+            </tbody>
+          </table>
+          </div>
+        `}
+      </section>
+    </div>
+  `;
+}
+
+function staffRow(s) {
+  const latest = latestResponseFor(s.id);
+  return `
+    <tr>
+      <td>${escapeHtml(s.staffNumber)}</td>
+      <td>${escapeHtml(s.name)}</td>
+      <td class="muted">${escapeHtml(s.brand || '—')}</td>
+      <td>${latest ? badge(latest.level) : '<span class="muted small">未回答</span>'}</td>
+      <td>
+        <code class="small" style="background:var(--paper); padding:3px 6px; border-radius:4px; display:inline-block; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle;">${escapeHtml(personalLink(s.token))}</code>
+      </td>
+      <td style="white-space:nowrap; text-align:right;">
+        <button class="btn link" data-action="view-responses" data-id="${s.id}">回答を見る</button>
+        <button class="btn link" data-action="copy-link" data-link="${escapeHtml(personalLink(s.token))}">コピー</button>
+        <button class="btn link" data-action="regen-token" data-id="${s.id}">再発行</button>
+        <button class="btn link" data-action="edit-staff" data-id="${s.id}">編集</button>
+        <button class="btn link" style="color:var(--follow);" data-action="delete-staff" data-id="${s.id}">削除</button>
+      </td>
+    </tr>
+  `;
+}
+
+function staffEditRow(s) {
+  return `
+    <tr>
+      <td colspan="6" style="padding:14px 0;">
+        <div style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+          <div class="field" style="margin:0; min-width:140px;">
+            <label class="field-label">スタッフ番号</label>
+            <input type="text" id="edit-number-${s.id}" value="${escapeHtml(s.staffNumber)}" />
+          </div>
+          <div class="field" style="margin:0; min-width:160px;">
+            <label class="field-label">氏名</label>
+            <input type="text" id="edit-name-${s.id}" value="${escapeHtml(s.name)}" />
+          </div>
+          <div class="field" style="margin:0; min-width:160px;">
+            <label class="field-label">ブランド</label>
+            <input type="text" id="edit-brand-${s.id}" value="${escapeHtml(s.brand || '')}" />
+          </div>
+          <button class="btn" data-action="save-staff-edit" data-id="${s.id}">保存</button>
+          <button class="btn ghost" data-action="cancel-staff-edit">キャンセル</button>
+        </div>
+        <p id="editError" class="small" style="color:var(--follow); margin:10px 0 0;"></p>
+      </td>
+    </tr>
+  `;
+}
+
+function viewStaffDetail() {
+  const staff = state.staffList.find(s => s.id === state.viewingStaffId);
+
+  if (!staff) {
+    return `
+      <div class="wrap">
+        <button class="btn ghost" data-nav="staff" style="margin-bottom:20px;">← スタッフ管理に戻る</button>
+        <div class="card empty">スタッフが見つかりません。削除された可能性があります。</div>
+      </div>
+    `;
+  }
+
+  const responses = state.responses
+    .filter(r => r.staffId === staff.id)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  return `
+    <div class="wrap">
+      <button class="btn ghost" data-nav="staff" style="margin-bottom:20px;">← スタッフ管理に戻る</button>
+      <h1 class="serif" style="font-size:22px; margin:0 0 4px;">${escapeHtml(staff.name)} さんの回答履歴</h1>
+      <p class="muted small" style="margin-bottom:24px;">
+        ${escapeHtml(staff.staffNumber)}${staff.brand ? ' ・ ' + escapeHtml(staff.brand) : ''}
+        ・ 全${responses.length}件
+      </p>
+      ${responses.length === 0
+        ? `<div class="card empty">まだ回答がありません。</div>`
+        : responses.map(r => staffDetailResponseCard(r)).join('')}
+    </div>
+  `;
+}
+
+function staffDetailResponseCard(r) {
+  return `
+    <section class="card" style="margin-bottom:16px;">
+      <div class="row-between" style="margin-bottom:16px;">
+        <span class="muted small">${escapeHtml(r.period)} ・ ${formatDate(r.createdAt)}</span>
+        ${badge(r.level)}
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:16px;">
+        <div>
+          <p class="muted small" style="margin:0 0 4px;">業務内容の満足度</p>
+          <p style="margin:0; font-weight:500;">${r.q1} / 5</p>
+        </div>
+        <div>
+          <p class="muted small" style="margin:0 0 4px;">人間関係</p>
+          <p style="margin:0; font-weight:500;">${r.q2} / 5</p>
+        </div>
+        <div>
+          <p class="muted small" style="margin:0 0 4px;">体調</p>
+          <p style="margin:0; font-weight:500;">${r.q3} / 5</p>
+        </div>
+      </div>
+      <p class="muted small" style="margin:0 0 6px;">やりがいに感じること</p>
+      <p class="small" style="background:var(--paper); border-radius:8px; padding:10px; margin:0 0 14px;">「${escapeHtml(r.ikigai)}」</p>
+      <p class="muted small" style="margin:0 0 6px;">お店の方とのやりとりや業務面で困っていること</p>
+      <p class="small" style="background:var(--paper); border-radius:8px; padding:10px; margin:0 0 ${r.followUps.length ? '16px' : '0'};">「${escapeHtml(r.komari)}」</p>
+      ${r.followUps.length > 0 ? r.followUps.map(f => `
+        <p class="small" style="color:var(--ink-soft); margin:8px 0 4px;">${escapeHtml(f.factor)}</p>
+        <ul class="small" style="margin:0 0 6px; padding-left:18px;">
+          ${f.talkingPoints.map(t => `<li>${escapeHtml(t)}</li>`).join('')}
+        </ul>
+      `).join('') : ''}
+    </section>
+  `;
+}
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function render() {
+  renderTopbar();
+  let html = '';
+  switch (state.view) {
+    case 'loading': html = viewLoading(); break;
+    case 'noConfig': html = viewNoConfig(); break;
+    case 'loadError': html = viewLoadError(); break;
+    case 'home': html = viewHome(); break;
+    case 'invalidLink': html = viewInvalidLink(); break;
+    case 'survey': html = viewSurvey(); break;
+    case 'surveyDone': html = viewSurveyDone(); break;
+    case 'adminEntry': html = state.currentAdmin ? viewDashboard() : viewAdminEntry(); break;
+    case 'dashboard': html = state.currentAdmin ? viewDashboard() : viewAdminEntry(); break;
+    case 'staff': html = state.currentAdmin ? viewStaff() : viewAdminEntry(); break;
+    case 'staffDetail': html = state.currentAdmin ? viewStaffDetail() : viewAdminEntry(); break;
+    default: html = viewHome();
+  }
+  app.innerHTML = html;
+  attachHandlers();
+}
+
+function attachHandlers() {
+  const reloadBtn = document.getElementById('reloadBtn');
+  if (reloadBtn) reloadBtn.addEventListener('click', () => window.location.reload());
+
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    el.addEventListener('click', () => {
+      const target = el.getAttribute('data-nav');
+      if (target === 'logout') {
+        api('logout');
+        setSession('');
+        state.currentAdmin = null;
+        state.staffList = [];
+        state.responses = [];
+        setView('home');
+      } else if (target === 'refresh') {
+        refreshAdminData();
+      } else if (target === 'dashboard') {
+        setView('dashboard');
+        refreshAdminData();
+      } else {
+        setView(target);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-auth-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.authMode = btn.getAttribute('data-auth-mode');
+      state.errorMsg = '';
+      render();
+    });
+  });
+
+  const surveyForm = document.getElementById('surveyForm');
+  if (surveyForm) {
+    surveyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(surveyForm);
+      const q1 = Number(fd.get('q1'));
+      const q2 = Number(fd.get('q2'));
+      const q3 = Number(fd.get('q3'));
+      const ikigai = document.getElementById('ikigai').value.trim();
+      const komari = document.getElementById('komari').value.trim();
+
+      if (![q1, q2, q3].every(v => v >= 1 && v <= 5)) {
+        showMsg('surveyError', 'すべての設問に回答してください。');
+        return;
+      }
+      if (!ikigai || !komari) {
+        showMsg('surveyError', '自由記述は両方とも入力してください。');
+        return;
+      }
+      showMsg('surveyError', '');
+
+      const submitBtn = surveyForm.querySelector('button[type=submit]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中…';
+
+      const result = determineCondition(q1, q2, q3, ikigai, komari);
+      const res = await api('submitSurvey', {
+        token: state.surveyToken,
+        q1: q1, q2: q2, q3: q3,
+        ikigai: ikigai, komari: komari,
+        level: result.level,
+        followUps: result.followUps,
+        period: currentPeriod()
+      });
+
+      if (res.ok) {
+        setView('surveyDone');
+      } else {
+        showMsg('surveyError', res.error || '送信に失敗しました。時間をおいて再度お試しください。');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '回答を送信する';
+      }
+    });
+  }
+
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPw').value;
+      const btn = loginForm.querySelector('button[type=submit]');
+      btn.disabled = true;
+      showMsg('authError', '');
+
+      const res = await api('login', { username: username, password: password });
+      if (!res.ok) {
+        btn.disabled = false;
+        showMsg('authError', res.error);
+        return;
+      }
+      setSession(res.session);
+      const data = await loadAdminData();
+      if (!data.ok) {
+        btn.disabled = false;
+        showMsg('authError', data.error);
+        return;
+      }
+      setView('dashboard');
+    });
+  }
+
+  const registerForm = document.getElementById('registerForm');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('regUsername').value.trim();
+      const pw1 = document.getElementById('regPw1').value;
+      const pw2 = document.getElementById('regPw2').value;
+
+      if (!isValidUsername(username)) {
+        showMsg('authError', "ユーザー名に使えない文字が含まれているか、長すぎます（/ \\ ? * [ ] : は使えません）。");
+        return;
+      }
+      if (pw1 !== pw2) {
+        showMsg('authError', 'パスワードが一致しません。');
+        return;
+      }
+      const btn = registerForm.querySelector('button[type=submit]');
+      btn.disabled = true;
+      showMsg('authError', '');
+
+      const res = await api('register', { username: username, password: pw1 });
+      if (!res.ok) {
+        btn.disabled = false;
+        showMsg('authError', res.error);
+        return;
+      }
+      setSession(res.session);
+      const data = await loadAdminData();
+      if (!data.ok) {
+        btn.disabled = false;
+        showMsg('authError', data.error);
+        return;
+      }
+      setView('dashboard');
+    });
+  }
+
+  const staffForm = document.getElementById('staffForm');
+  if (staffForm) {
+    staffForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const staffNumber = document.getElementById('staffNumber').value.trim();
+      const name = document.getElementById('staffName').value.trim();
+      const brand = document.getElementById('staffBrand').value.trim();
+      if (!staffNumber || !name) {
+        showMsg('staffFormError', 'スタッフ番号と氏名は必須です。');
+        return;
+      }
+      const btn = staffForm.querySelector('button[type=submit]');
+      btn.disabled = true;
+      showMsg('staffFormError', '');
+
+      const res = await adminCall('addStaff', { staffNumber: staffNumber, name: name, brand: brand });
+      if (!res) return;
+      if (!res.ok) {
+        btn.disabled = false;
+        showMsg('staffFormError', res.error);
+        return;
+      }
+      state.staffList = res.staff;
+      state.errorMsg = '';
+      state.successMsg = `${name} さんを登録しました。`;
+      render();
+    });
+  }
+
+  document.querySelectorAll('[data-action="edit-staff"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.editingStaffId = btn.getAttribute('data-id');
+      state.errorMsg = '';
+      state.successMsg = '';
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="view-responses"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.viewingStaffId = btn.getAttribute('data-id');
+      setView('staffDetail');
+    });
+  });
+
+  document.querySelectorAll('[data-action="cancel-staff-edit"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.editingStaffId = null;
+      state.errorMsg = '';
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="save-staff-edit"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      const staffNumber = document.getElementById(`edit-number-${id}`).value.trim();
+      const name = document.getElementById(`edit-name-${id}`).value.trim();
+      const brand = document.getElementById(`edit-brand-${id}`).value.trim();
+      if (!staffNumber || !name) {
+        showMsg('editError', 'スタッフ番号と氏名は必須です。');
+        return;
+      }
+      btn.disabled = true;
+      showMsg('editError', '');
+
+      const res = await adminCall('updateStaff', { id: id, staffNumber: staffNumber, name: name, brand: brand });
+      if (!res) return;
+      if (!res.ok) {
+        btn.disabled = false;
+        showMsg('editError', res.error);
+        return;
+      }
+      state.staffList = res.staff;
+      state.editingStaffId = null;
+      state.errorMsg = '';
+      state.successMsg = '更新しました。';
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="delete-staff"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      const staff = state.staffList.find(s => s.id === id);
+      const ok = window.confirm(
+        `${staff ? staff.name + ' さん' : 'このスタッフ'}を削除します。個人リンクは無効になり、元に戻せません（過去の回答データは残ります）。よろしいですか？`
+      );
+      if (!ok) return;
+
+      const res = await adminCall('deleteStaff', { id: id });
+      if (!res) return;
+      if (!res.ok) { window.alert(res.error); return; }
+      state.staffList = res.staff;
+      if (state.editingStaffId === id) state.editingStaffId = null;
+      state.errorMsg = '';
+      state.successMsg = '削除しました。';
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-action="copy-link"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const link = btn.getAttribute('data-link');
+      try {
+        await navigator.clipboard.writeText(link);
+        const original = btn.textContent;
+        btn.textContent = 'コピーしました';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch (e) {
+        window.prompt('コピーできませんでした。下のURLを手動で選択してコピーしてください。', link);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-action="regen-token"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      const staff = state.staffList.find(s => s.id === id);
+      const ok = window.confirm(
+        `${staff ? staff.name + ' さんの' : ''}リンクを再発行すると、今まで共有していたリンクは使えなくなります。よろしいですか？`
+      );
+      if (!ok) return;
+
+      const res = await adminCall('regenToken', { id: id });
+      if (!res) return;
+      if (!res.ok) { window.alert(res.error); return; }
+      state.staffList = res.staff;
+      state.successMsg = 'リンクを再発行しました。新しいリンクを共有してください。';
+      state.errorMsg = '';
+      render();
+    });
+  });
+}
+
+init();
+</script>
+</body>
+</html>
